@@ -57,15 +57,15 @@ public class IoClient {
 		 * Map<String, List<File>> getFroupFiles = getFileGroup(files);
 		 * readUsingThread(filesExporter, getFroupFiles);
 		 */
-		
-		//readUsingThreadClass(listOfFolderDirectory,  filesExporter);
-		readUsingExecutorService (listOfFolderDirectory,  filesExporter);
+
+		readUsingThreadClass(listOfFolderDirectory, filesExporter);
+		// readUsingExecutorService (listOfFolderDirectory, filesExporter);
 
 	}
 
 	private static void readUsingExecutorService(List<String> listOfFolderDirectory, FilesExporter filesExporter) {
 		// TODO Auto-generated method stub
-		//ExecutorService executor = Executors.newSingleThreadExecutor();
+		// ExecutorService executor = Executors.newSingleThreadExecutor();
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 
 		executor.submit(() -> {
@@ -79,11 +79,11 @@ public class IoClient {
 					e.printStackTrace();
 				}
 			});
-		    System.out.println("END CSV "+ Thread.currentThread().getName());
+			System.out.println("END CSV " + Thread.currentThread().getName());
 
 		});
 		executor.submit(() -> {
-		    System.out.println("START TXT ; "+ Thread.currentThread().getName());
+			System.out.println("START TXT ; " + Thread.currentThread().getName());
 			listOfFolderDirectory.forEach(obj -> {
 				try {
 					List<File> files = Files.list(Paths.get(obj)).map(Path::toFile)
@@ -94,11 +94,11 @@ public class IoClient {
 					e.printStackTrace();
 				}
 			});
-		    System.out.println("END TXT : "+ Thread.currentThread().getName());
+			System.out.println("END TXT : " + Thread.currentThread().getName());
 
 		});
 		executor.submit(() -> {
-		    System.out.println("START JSON : "+ Thread.currentThread().getName());
+			System.out.println("START JSON : " + Thread.currentThread().getName());
 			listOfFolderDirectory.forEach(obj -> {
 				try {
 					List<File> files = Files.list(Paths.get(obj)).map(Path::toFile)
@@ -109,18 +109,18 @@ public class IoClient {
 					e.printStackTrace();
 				}
 			});
-		    System.out.println("START END : "+ Thread.currentThread().getName());
+			System.out.println("START END : " + Thread.currentThread().getName());
 		});
-		
+
 		executor.shutdown();
 	}
 
 	private static void readUsingThreadClass(List<String> listOfFolderDirectory, FilesExporter filesExporter) {
 		// TODO Auto-generated method stub
-		ReadCsvFile csvFile = new ReadCsvFile( listOfFolderDirectory,  filesExporter);
+		ReadCsvFile csvFile = new ReadCsvFile(listOfFolderDirectory, filesExporter);
 		Thread csvFileThread = new Thread(csvFile);
 		csvFileThread.start();
-		
+
 		ReadJsonFile jsonFile = new ReadJsonFile(listOfFolderDirectory, filesExporter);
 		Thread jsonFileThread = new Thread(jsonFile);
 		jsonFileThread.start();
